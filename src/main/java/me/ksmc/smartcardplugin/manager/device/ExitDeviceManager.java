@@ -5,6 +5,7 @@ import me.ksmc.smartcardplugin.manager.EconomyManager;
 import me.ksmc.smartcardplugin.manager.ItemManager;
 import me.ksmc.smartcardplugin.manager.device.type.GateManager;
 import me.ksmc.smartcardplugin.util.DeviceUtils;
+import me.ksmc.smartcardplugin.util.FareRetriever;
 import me.ksmc.smartcardplugin.util.ItemUtils;
 import me.ksmc.smartcardplugin.util.StringUtils;
 import org.bukkit.ChatColor;
@@ -13,11 +14,12 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class ExitDeviceManager {
 
-    public static String activateDevice(String deviceType, Sign deviceSign, Player activeUser, ItemStack fareMedium, String specifiedAgencyId, String specifiedStationCode) throws SQLException {
+    public static String activateDevice(String deviceType, Sign deviceSign, Player activeUser, ItemStack fareMedium, String specifiedAgencyId, String specifiedStationCode) throws SQLException, IOException {
 
         if (fareMedium.getType() == Material.NAME_TAG) {  // smartcard
             String cardID = StringUtils.getCardIdFromLore(fareMedium);
@@ -72,10 +74,11 @@ public class ExitDeviceManager {
             } else {
                 double penaltyFareFromEntryRecord = Double.parseDouble(StringUtils.getPenaltyFareOnCardEntryRecord(cardID));
 
-                // TODO: GET TRIP FARE FROM FARE CHART
                 String originStation = StringUtils.getOriginStationOnCardEntryRecord(cardID);
 
-                String fareRaw = "15.3";  // TEST FOR NOW -- GET FARE FROM EXCEL FILE
+                // GET TRIP FARE FROM FARE CHART .CSV FILE
+                String fareRaw = FareRetriever.getFare(specifiedAgencyId, originStation, specifiedStationCode);
+
                 if (!StringUtils.validMoneyString(fareRaw)) {
                     DeviceUtils.playErrorSound(activeUser);
                     return ChatColor.RED + "Error: The fare amount input for this trip is invalid.";

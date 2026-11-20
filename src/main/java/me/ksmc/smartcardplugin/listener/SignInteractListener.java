@@ -17,12 +17,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class SignInteractListener implements Listener {
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) throws SQLException {
+    public void onPlayerInteract(PlayerInteractEvent event) throws SQLException, IOException {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 

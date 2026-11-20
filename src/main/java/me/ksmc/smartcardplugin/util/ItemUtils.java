@@ -12,6 +12,11 @@ import java.util.List;
 
 public class ItemUtils {
 
+    public static String getFareChartFileName(String agencyID) {
+        return Main.getPlugin().getConfig().getString(agencyID + ".fare-calculation-config.fare-chart");
+    }
+
+
     public static String getCompanyName(String agencyID) {
         return Main.getPlugin().getConfig().getString(agencyID + ".company-name");
     }
