@@ -6,6 +6,8 @@ import me.ksmc.smartcardplugin.dependency.VaultAPI;
 import me.ksmc.smartcardplugin.listener.SignInteractListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
+
 public final class Main extends JavaPlugin {
     // Allows passing the plugin instance to other classes
     private static Main plugin;
@@ -28,7 +30,11 @@ public final class Main extends JavaPlugin {
         saveResource("fare_charts/mtr_sample.csv", false);
         saveResource("fare_charts/mtr_lrt_sample.csv", false);
 
-        FareMediaDatabase.initializeDatabase();
+        try {
+            FareMediaDatabase.initializeDatabase();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         VaultAPI.initializeVault();
 

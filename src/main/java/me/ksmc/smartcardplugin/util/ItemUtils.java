@@ -3,14 +3,23 @@ package me.ksmc.smartcardplugin.util;
 import me.ksmc.smartcardplugin.Main;
 import me.ksmc.smartcardplugin.database.FareMediaDatabase;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ItemUtils {
+
+    public static List<String> getAgenciesInConfig() {
+        Set<String> agencyKeys = Main.getPlugin().getConfig().getKeys(false);
+
+        return new ArrayList<>(agencyKeys);
+    }
 
     public static String getFareChartFileName(String agencyID) {
         return Main.getPlugin().getConfig().getString(agencyID + ".fare-calculation-config.fare-chart");

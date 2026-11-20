@@ -1,11 +1,13 @@
 package me.ksmc.smartcardplugin.database;
 
 import me.ksmc.smartcardplugin.Main;
+import me.ksmc.smartcardplugin.util.ItemUtils;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class FareMediaDatabase {
@@ -55,7 +57,7 @@ public class FareMediaDatabase {
         }
     }
 
-    public static void initializeDatabase() {
+    public static void initializeDatabase() throws SQLException {
         // Creates the database .db file (if not already created yet) and connect to it
         try {
             fareMediaDatabase = new FareMediaDatabase(Main.getPlugin().getDataFolder().getAbsolutePath() + "/fare_media.db");
@@ -67,8 +69,17 @@ public class FareMediaDatabase {
             Bukkit.getPluginManager().disablePlugin(Main.getPlugin());
         }
 
-        // TODO
-        // synchronize the list of agencies defined in config.yml with the CompanyRevenue table in the database
+        // Synchronize the list of agencies defined in config.yml with the CompanyRevenue table in the database
+        // for now, it is ONE WAY only, meaning:
+        // if agency is defined in config.yml but not yet exists in the database, it will be added to the database
+        // if agency exists in the database but is not defined in config.yml, the database entry won't get removed
+        List<String> agenciesInConfig = ItemUtils.getAgenciesInConfig();
+
+        for (String agencyID : agenciesInConfig) {
+            if (!getFareMediaDatabase().agencyExists(agencyID)) {
+                getFareMediaDatabase().createAgency(agencyID);
+            }
+        }
     }
 
     public static FareMediaDatabase getFareMediaDatabase() {
@@ -99,6 +110,17 @@ public class FareMediaDatabase {
             preparedStatement.setString(1, agencyID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean createAgency(String agencyID) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO CompanyRevenue (agency_id) VALUES (?)")) {
+            preparedStatement.setString(1, agencyID);
+
+            if (preparedStatement.executeUpdate() > 0) {
                 return true;
             }
         }
