@@ -18,14 +18,14 @@ The development of this plugin was inspired by i998979's "Essencard" plugin. We 
 - "/smartcard machine" command
 - Part of section 3.2.1: Wide fare gates. The feature about an iron trapdoor that will be activated alongside an adjacent iron trapdoor activated by the redstone mechanism of fare gates is not yet implemented.
 - All of section 3.2.3: Payment terminals that activate redstone devices and are adaptive to the type of the device (for now, they will be dispensers and iron doors).
-- More than one money currency tailored to different transit agencies
+- More than one money currency for different transit agencies
 - Fare multiplier value for fares retrieved from fare charts
 ## Things to be Improved
 - Fix the money amount rounding issue. For now, *double* is the format used to store the money amounts. When the money amount involves a decimal point, it is known that it is not stored as an exact value (floating point numbers).
-	- Solution: Before performing an arithmetic operation involving a *double* involving a decimal point, convert the money amount to an *integer* (by "moving" decimal places such that there is no decimal value and remembering how many places have been moved). Then after performing the operation, revert the updated *integer* back to a *double* by moving decimal places again (and then convert the *double* to a *string* for display).
+	- Solution: Before performing an arithmetic operation involving a *double* involving a decimal point, convert the money amount to an *integer* (by "moving" decimal places such that there is no decimal value, and remembering how many places have been moved). Then after performing the operation, revert the updated *integer* back to a *double* by moving decimal places again (and then convert the *double* to a *string* for display).
 - Synchronize the company agency entries in the database file with those defined in the config.yml file. For now, it only works one way:
 	- Agencies defined in config.yml are automatically added to the database file.
-	- One an agency is added to the database, if you remove that agency in config.yml, the entry in the database will still exist and not be removed. 
+	- Once an agency is added to the database, if you remove that agency in config.yml, the entry in the database will still exist and not be removed. 
 
 ## (Potential) Things to Add
 - Command tab completion (the .java file for this feature currently exists in the repository)
@@ -45,7 +45,7 @@ Initially, a card contains no money. Players must use a self-service machine to 
 
 Each card has a unique cardID, and is linked to the transit operator that issued it and cannot be changed. A card stores its remaining balance and the last 5 transaction records. A card can expire after a certain time period (can be customized per transit operator) from the last transaction. A card is not linked to a player and can be used by any player.
 
-To use a smart card: right-click on designated signs while holding the card to activate fare gates/validators and use payment terminals. It is possible to make smart cards useable across different transit agencies.
+To use a smart card: right-click on designated signs while holding the card to activate fare gates/validators and use payment terminals. It is possible to make smart cards useable across different transit agencies (see details in section 3.1 below).
 
 A card can be manually deleted from the system by an admin using "/smartcard delete card cardID".
 
@@ -78,13 +78,13 @@ To obtain a pass: players must buy one from a self-service machine. An admin (or
 
 Each pass has a unique passID. A pass is linked to the transit operator that issued it and cannot be changed. The pass type stored on the pass cannot be changed. A pass can expire after a certain time period, and/or be useless after a specified amount of uses, depending on the pass type. A pass is not linked to a player and can be used by any player. A pass cannot be reloaded after all its contents have been used up.
 
-To use a pass: right-click on designated signs while holding the pass to activate fare gates/validators. It is possible to make a pass useable across different transit agencies.
+To use a pass: right-click on designated signs while holding the pass to activate fare gates/validators. It is possible to make a pass useable across different transit agencies (see details in section 3.1 below).
 
 A pass can be manually deleted from the system by an admin using "/smartcard delete pass passID".
 #### 1.3.2 Staff Passes
 Staff passes are represented as customized trial keys in Minecraft.
 
-Staff passes allow pass holders (usually staff members) to travel for free and access restricted areas. A staff pass can activate any fare validation device with no cost. A staff pass is only usable within the transportation system of the transit operator that issued it.
+Staff passes allow pass holders (usually staff members, though the holder does not necessarily have to be a staff member) to travel for free and access restricted areas. A staff pass can activate any fare validation device with no cost, but is only usable within the transportation system of the transit operator that issued it.
 
 A staff pass does not have an ID. A staff pass cannot be obtained by an ordinary player. An admin (or staff) can manually obtain a staff pass using "/smartcard staffpass agencyID".
 
@@ -129,7 +129,7 @@ Fare validation devices are represented as customized signs. The signs must use 
 | Line on the sign                                                                      | Content                     | Example 1    | Example 2        | Example 3      | Example 4    |
 | ------------------------------------------------------------------------------------- | --------------------------- | ------------ | ---------------- | -------------- | ------------ |
 | 1 (as-is; see deviceFunction table below; see 3.2 Fare Validation Device Types below) | [deviceFunction deviceType] | [Entry Gate] | [Exit Validator] | [Pay Terminal] | [Staff Gate] |
-| 2 (arguments)                                                                         | agencyID (line2Arguments)   | MTR ADM      | LRT 3 12.5       | MTR 45.6 TSW   | MTR          |
+| 2 (arguments)                                                                         | agencyID (line2Arguments)   | MTR ADM      | LRT 3            | MTR 45.6 TSW   | MTR          |
 | 3 (customizable)                                                                      |                             |              |                  |                |              |
 | 4 (customizable)                                                                      |                             |              |                  |                |              |
 
@@ -138,7 +138,7 @@ Each device can be serving one of these functions; each function requires certai
 | deviceFunction | line2Arguments (optional argument) | Example  | Description                                                                                                                                          |
 | -------------- | ---------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Entry          | stationCode/Zone                   | ADM      | Entry point to a transportation network                                                                                                              |
-| Exit           | stationCode/Zone                   | 3 12.5   | Exit point of a transportation network                                                                                                               |
+| Exit           | stationCode/Zone                   | 3        | Exit point of a transportation network                                                                                                               |
 | Pay            | moneyAmount (stationCode/Zone)     | 45.6 TSW | Deduct money directly from the card when used (not applicable to tickets or passes); stationCode/Zone is for the use of tickets or passes (optional) |
 | Staff          |                                    | Staff    | Can only be used with staff passes; there are no arguments                                                                                           |
 
@@ -235,10 +235,6 @@ If a combination is missing or no such combination is defined when calculating t
 
 It is possible to set a temporary network-wide fare discount, or allow free travel across the network, such as when there are special events on a server. This can be done by changing the fare multiplier value in config.yml, so that when calculating the fare, the normal fare defined in the fare chart will be multiplied by that value, which will be the final fare deducted from a player.
 
-### 4.2 Special Cases (to be implemented later or not implemented)
-Potential ones (MTR):
-- TST-ETST transfer within 3 mins
-- MEF 2-min paid area fare exemption
 
 # Commands and Permissions
 ## Commands
