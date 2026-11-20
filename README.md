@@ -15,9 +15,11 @@ The development of this plugin was inspired by i998979's "Essencard" plugin. We 
 - Integration with required dependencies for the plugin
 ## Features Not Yet Implemented
 - All of section 2: Fare Distribution. Self-service/ticket machines with GUI (Minecraft inventory layout) that allow ordinary players to purchase smart cards, tickets and passes, as well as check information about their fare medium.
+- "/smartcard machine" command
 - Part of section 3.2.1: Wide fare gates. The feature about an iron trapdoor that will be activated alongside an adjacent iron trapdoor activated by the redstone mechanism of fare gates is not yet implemented.
 - All of section 3.2.3: Payment terminals that activate redstone devices and are adaptive to the type of the device (for now, they will be dispensers and iron doors).
-- "/smartcard machine" command
+- More than one money currency tailored to different transit agencies
+- Fare multiplier value for fares retrieved from fare charts
 ## Things to be Improved
 - Fix the money amount rounding issue. For now, *double* is the format used to store the money amounts. When the money amount involves a decimal point, it is known that it is not stored as an exact value (floating point numbers).
 	- Solution: Before performing an arithmetic operation involving a *double* involving a decimal point, convert the money amount to an *integer* (by "moving" decimal places such that there is no decimal value and remembering how many places have been moved). Then after performing the operation, revert the updated *integer* back to a *double* by moving decimal places again (and then convert the *double* to a *string* for display).
