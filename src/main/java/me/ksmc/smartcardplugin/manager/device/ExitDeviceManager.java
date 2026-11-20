@@ -77,13 +77,8 @@ public class ExitDeviceManager {
                 String originStation = StringUtils.getOriginStationOnCardEntryRecord(cardID);
 
                 // GET TRIP FARE FROM FARE CHART .CSV FILE
-                String fareRaw = FareRetriever.getFare(specifiedAgencyId, originStation, specifiedStationCode);
-
-                if (!StringUtils.validMoneyString(fareRaw)) {
-                    DeviceUtils.playErrorSound(activeUser);
-                    return ChatColor.RED + "Error: The fare amount input for this trip is invalid.";
-                }
-                double tripFare = Double.parseDouble(fareRaw);
+                double tripFare = FareRetriever.getFare(specifiedAgencyId, originStation, specifiedStationCode);
+                // if info is missing in the fare chart file, tripFare will be 0
 
                 double cardNewBalance = cardCurrentBalance - tripFare - penaltyFareFromEntryRecord;
 
@@ -194,6 +189,12 @@ public class ExitDeviceManager {
             }
 
             gateManager.activateGate(deviceSign);
+        }
+
+
+        // TODO
+        if (deviceType.equalsIgnoreCase("terminal")) {
+
         }
 
         DeviceUtils.playSuccessSound(activeUser);

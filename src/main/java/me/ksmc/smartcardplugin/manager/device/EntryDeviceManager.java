@@ -181,6 +181,8 @@ public class EntryDeviceManager {
             gateManager.activateGate(deviceSign);
         }
 
+
+        // TODO
         if (deviceType.equalsIgnoreCase("terminal")) {
 
         }

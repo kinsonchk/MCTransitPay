@@ -36,6 +36,12 @@ public class StaffDeviceManager {
             gateManager.activateGate(deviceSign);
         }
 
+
+        // TODO
+        if (deviceType.equalsIgnoreCase("terminal")) {
+
+        }
+
         DeviceUtils.playSuccessSound(activeUser);
         return ChatColor.GREEN + "Staff " + deviceType + " activated.";
     }

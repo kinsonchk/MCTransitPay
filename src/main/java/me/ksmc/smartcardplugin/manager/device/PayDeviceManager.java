@@ -164,6 +164,12 @@ public class PayDeviceManager {
             gateManager.activateGate(deviceSign);
         }
 
+
+        // TODO
+        if (deviceType.equalsIgnoreCase("terminal")) {
+
+        }
+
         DeviceUtils.playSuccessSound(activeUser);
         return ChatColor.GREEN + "Pay " + deviceType + " activated.";
     }
