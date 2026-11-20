@@ -3,7 +3,33 @@ A Minecraft Java Spigot plugin that adds Automated Fare Collection (AFC) systems
 
 The development of this plugin was inspired by i998979's "Essencard" plugin. We added many more features that are not found in that plugin.
 
-# Features
+
+# Current Development Status of the Plugin (as of 20 November 2026)
+## Features Already Implemented
+- All of section 1: Fare Media
+- All of section 3.1: Fare Validation Device Functions
+- All of section 4.1: Fare Calculation (fare retrieving from fare chart .csv files)
+- Majority of the plugin commands
+- Plugin permissions
+- Plugin configuration
+- Integration with required dependencies for the plugin
+## Features Not Yet Implemented
+- All of section 2: Fare Distribution. Self-service/ticket machines with GUI (Minecraft inventory layout) that allow ordinary players to purchase smart cards, tickets and passes, as well as check information about their fare medium.
+- Part of section 3.2.1: Wide fare gates. The feature about an iron trapdoor that will be activated alongside an adjacent iron trapdoor activated by the redstone mechanism of fare gates is not yet implemented.
+- All of section 3.2.3: Payment terminals that activate redstone devices and are adaptive to the type of the device (for now, they will be dispensers and iron doors).
+- "/smartcard machine" command
+## Things to be Improved
+- Fix the money amount rounding issue. For now, *double* is the format used to store the money amounts. When the money amount involves a decimal point, it is known that it is not stored as an exact value (floating point numbers).
+	- Solution: Before performing an arithmetic operation involving a *double* involving a decimal point, convert the money amount to an *integer* (by "moving" decimal places such that there is no decimal value and remembering how many places have been moved). Then after performing the operation, revert the updated *integer* back to a *double* by moving decimal places again (and then convert the *double* to a *string* for display).
+- Synchronize the company agency entries in the database file with those defined in the config.yml file. For now, it only works one way:
+	- Agencies defined in config.yml are automatically added to the database file.
+	- One an agency is added to the database, if you remove that agency in config.yml, the entry in the database will still exist and not be removed. 
+
+## (Potential) Things to Add
+- Command tab completion (the .java file for this feature currently exists in the repository)
+
+
+# Plugin Features
 Using the plugin, server admins (and transit operators) can configure a customized AFC system tailored to their specific needs and collect fares. The plugin also supports servers with more than one transportation system; separated AFC systems can be defined, each with a different transit card name, currency, fare scheme, fare gate policy, etc.
 
 The AFC system in this plugin consists of 4 main components:
@@ -234,7 +260,8 @@ Potential ones (MTR):
 - "Smartcard.Admin": Gives access to admin commands. (OP is not sufficient, permission must be explicitly granted to admins)
 	- Most commands are admin-use only, so granting this permission allows access to all admin commands of this plugin.
 
-# Configuration
+
+# Plugin Configuration
 Server admins can define transit operators and customize each one in the config.yml file. There must be at least one transit operator.
 
 Certain features can be disabled. If so, then the corresponding options in the self-service machine menu won't be displayed.
@@ -481,9 +508,10 @@ STM:
 
 
 # Plugin Requirements
-## Supported Minecraft versions
+## Supported Minecraft Versions
 - Developed and tested for Minecraft 1.21.11.
 - All functionality should work on newer versions, but not necessarily for older versions.
-## Dependencies
+## Required Dependencies
+In order for the Smartcard Plugin to load and run successfully, the following plugins must also be installed onto the server:
 - Vault (https://www.spigotmc.org/resources/vault.34315/)
 - Essentials (EssentialsX https://essentialsx.net/downloads)
